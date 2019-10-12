@@ -2,6 +2,7 @@
 基于goframe的web
 
 # Quick Start
+默认80端口，默认html文件夹为web页面文件
 ```go
 package main
 
