@@ -1,8 +1,8 @@
 package zconfig
 
 import (
-	"fmt"
 	"github.com/zhang201702/zhang/zfile"
+	"github.com/zhang201702/zhang/zlog"
 )
 
 type RedisInfo struct {
@@ -42,9 +42,9 @@ var Config ConfigInfo
 func init() {
 	err := zfile.OpenJson("./config.json", &Config)
 	if err != nil {
-		fmt.Println("读取config.json 异常", err)
+		zlog.LogError(err, "zconfig.init", "读取config.json 异常", err)
 	}
-	fmt.Print(Config)
+	Config = ConfigInfo{}
 }
 
 var defaultConfig *map[string]interface{}
@@ -54,7 +54,7 @@ func Default() *map[string]interface{} {
 		defaultConfig = new(map[string]interface{})
 		//defaultConfig = make(map[string]interface{},0)Z
 		if err := zfile.OpenJson("./config.json", defaultConfig); err != nil {
-			return nil
+			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
 		}
 	}
 	return defaultConfig

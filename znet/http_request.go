@@ -22,13 +22,11 @@ func getMap(data []byte) (z.Map, error) {
 
 }
 
-func DoRequest(method, url string, data *string, header z.Map) ([]byte, error) {
+func DoRequest(method, url string, data string, header z.Map) ([]byte, error) {
 	client := GetHttpClient()
 	defer FreeHttpClient(client)
 	body := (*strings.Reader)(nil)
-	if data != "" {
-		body = strings.NewReader(data)
-	}
+	body = strings.NewReader(data)
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {
 		zlog.LogError(err, "getEmail", "NewRequest")
@@ -49,7 +47,7 @@ func DoRequest(method, url string, data *string, header z.Map) ([]byte, error) {
 		return nil, err
 	}
 	if response.StatusCode != 200 {
-		zlog.Log("请求失败，status:" + response.Status)
+		zlog.Log("请求失败，status:"+response.Status, request.URL.String())
 		return nil, errors.New("请求失败，status:" + response.Status)
 	}
 	result, err := ioutil.ReadAll(response.Body)
@@ -60,8 +58,8 @@ func DoRequest(method, url string, data *string, header z.Map) ([]byte, error) {
 }
 
 // Get请求
-func GetJson(url string, body *string, header z.Map) (interface{}, error) {
-	data, err := DoRequest("POST", url, body, header)
+func GetJson(url string, body string, header z.Map) (z.Map, error) {
+	data, err := DoRequest("GET", url, body, header)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +68,7 @@ func GetJson(url string, body *string, header z.Map) (interface{}, error) {
 }
 
 // Post 请求
-func PostJson(url string, body *string, header z.Map) (z.Map, error) {
+func PostJson(url string, body string, header z.Map) (z.Map, error) {
 	data, err := DoRequest("POST", url, body, header)
 	if err != nil {
 		return nil, err

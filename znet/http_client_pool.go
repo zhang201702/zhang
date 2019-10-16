@@ -3,7 +3,6 @@ package znet
 import (
 	"github.com/gogf/gf/util/gconv"
 	"github.com/zhang201702/zhang/zconfig"
-	"github.com/zhang201702/zhang/zlog"
 	"net"
 	"net/http"
 	"sync"
@@ -40,7 +39,6 @@ func fetchHttpClient() *http.Client {
 	}
 	clientCount++
 
-	zlog.Log("fetchHttpClient", ":::", client)
 	return client
 }
 func GetHttpClient() *http.Client {
@@ -60,7 +58,6 @@ func GetHttpClient() *http.Client {
 }
 
 func FreeHttpClient(client *http.Client) {
-	zlog.Log("FreeHttpClient", ":::", client)
 	clientCount--
 	clients[clientCount] = client
 	if isWait {

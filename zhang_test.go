@@ -1,5 +1,10 @@
 package zhang
 
+import (
+	"github.com/zhang201702/zhang/zEncrypt"
+	"testing"
+)
+
 //
 //func TestDefault(t *testing.T){
 //	s := Default()
@@ -11,3 +16,7 @@ package zhang
 //	}()
 //	// s.Run()
 //}
+
+func TestEncrypt(t *testing.T) {
+	zEncrypt.Scrypt.EnCode("aaa")
+}
