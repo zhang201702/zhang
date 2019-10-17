@@ -1,7 +1,7 @@
 package zhang
 
 import (
-	"github.com/zhang201702/zhang/zEncrypt"
+	"github.com/zhang201702/zhang/zencrypt"
 	"testing"
 )
 
@@ -18,5 +18,5 @@ import (
 //}
 
 func TestEncrypt(t *testing.T) {
-	zEncrypt.Scrypt.EnCode("aaa")
+	zencrypt.Scrypt.EnCode("aaa")
 }

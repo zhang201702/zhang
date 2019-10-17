@@ -1,8 +1,10 @@
 package zconfig
 
 import (
+	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
+	"strings"
 )
 
 type RedisInfo struct {
@@ -40,22 +42,72 @@ type RabbitMQInfo struct {
 var Config ConfigInfo
 
 func init() {
-	err := zfile.OpenJson("./config.json", &Config)
-	if err != nil {
-		zlog.LogError(err, "zconfig.init", "读取config.json 异常", err)
+
+	filePath := getDefaultConfigPath()
+	if filePath != "" {
+		err := zfile.OpenJson(filePath, &Config)
+		if err != nil {
+			zlog.LogError(err, "zconfig.init", "读取config.json 异常", err)
+		}
+	} else {
+		Config = ConfigInfo{}
 	}
-	Config = ConfigInfo{}
+
 }
 
-var defaultConfig *map[string]interface{}
+func getDefaultConfigPath() string {
+	if zfile.PathExists("./config.json") {
+		return "./config.json"
+	} else if zfile.PathExists("./config/config.json") {
+		return "./config/config.json"
+	}
+	return ""
+}
 
-func Default() *map[string]interface{} {
+var defaultConfig z.Map
+
+func Default() z.Map {
 	if defaultConfig == nil {
-		defaultConfig = new(map[string]interface{})
-		//defaultConfig = make(map[string]interface{},0)Z
-		if err := zfile.OpenJson("./config.json", defaultConfig); err != nil {
-			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
+		filePath := getDefaultConfigPath()
+		if filePath != "" {
+			defaultConfig = z.Map{}
+			if err := zfile.OpenJson(filePath, &defaultConfig); err != nil {
+				zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
+			}
 		}
 	}
 	return defaultConfig
+}
+
+func GetCconfig(key string) interface{} {
+	keys := strings.Split(key, ".")
+	var c interface{} = Default()
+	var result interface{} = nil
+	for _, key := range keys {
+		switch c.(type) {
+		case map[string]interface{}:
+			{
+				temp := c.(map[string]interface{})
+				if p, ok := temp[key]; ok {
+					c = p
+					result = c
+				} else {
+					return nil
+				}
+			}
+		case z.Map:
+			{
+				temp := c.(z.Map)
+				if p, ok := temp[key]; ok {
+					c = p
+					result = c
+				} else {
+					return nil
+				}
+			}
+		default:
+			return nil
+		}
+	}
+	return result
 }

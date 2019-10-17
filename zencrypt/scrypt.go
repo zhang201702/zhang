@@ -1,4 +1,4 @@
-package zEncrypt
+package zencrypt
 
 import (
 	"crypto/rand"
