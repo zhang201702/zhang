@@ -48,6 +48,12 @@ func DoRequest(method, url string, data string, header z.Map) ([]byte, error) {
 	}
 	if response.StatusCode != 200 {
 		zlog.Log("请求失败，status:"+response.Status, request.URL.String())
+		resultA, _ := ioutil.ReadAll(response.Body)
+		zlog.Log("url", url)
+		zlog.Log("data", data)
+		zlog.Log("header", header)
+		zlog.Log("body", string(resultA))
+
 		return nil, errors.New("请求失败，status:" + response.Status)
 	}
 	result, err := ioutil.ReadAll(response.Body)
