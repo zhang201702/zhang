@@ -1,6 +1,8 @@
 package zconfig
 
 import (
+	"errors"
+	"github.com/gogf/gf/util/gconv"
 	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
@@ -30,6 +32,7 @@ type ConfigInfo struct {
 	DataPath  string
 	Websocket WebSocketInfo
 	Port      int
+	Debug     bool
 }
 
 type RabbitMQInfo struct {
@@ -40,7 +43,7 @@ type RabbitMQInfo struct {
 }
 
 var Config ConfigInfo
-
+var Debug = false
 func init() {
 
 	filePath := getDefaultConfigPath()
@@ -52,7 +55,7 @@ func init() {
 	} else {
 		Config = ConfigInfo{}
 	}
-
+	Debug = Config.Debug
 }
 
 func getDefaultConfigPath() string {
@@ -79,7 +82,7 @@ func Default() z.Map {
 	return defaultConfig
 }
 
-func GetCconfig(key string) interface{} {
+func GetConfig(key string) interface{} {
 	keys := strings.Split(key, ".")
 	var c interface{} = Default()
 	var result interface{} = nil
@@ -110,4 +113,40 @@ func GetCconfig(key string) interface{} {
 		}
 	}
 	return result
+}
+
+func GetString(key string) (string,error) {
+	info := GetConfig(key)
+	if info == nil {
+		return gconv.String(info), nil
+	}
+	return "",errors.New("未找到配置")
+}
+
+func GetInt(key string) (int,error) {
+	info := GetConfig(key)
+	if info == nil {
+		return  gconv.Int(info),nil
+	}
+	return 0,errors.New("未找到配置")
+}
+
+func GetFloat(key string) (float64,error) {
+	info := GetConfig(key)
+	if info == nil {
+		return  gconv.Float64(info),nil
+	}
+	return 0,errors.New("未找到配置")
+}
+
+func GetMap(key string) (z.Map,error) {
+	info := GetConfig(key)
+	if info == nil {
+		if r,ok := info.(map[string]interface{}); ok {
+			return nil, errors.New("数据类型不匹配")
+		}else{
+			return r, nil
+		}
+	}
+	return nil,errors.New("未找到配置")
 }
