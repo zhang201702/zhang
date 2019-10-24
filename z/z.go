@@ -41,6 +41,6 @@ func NewResult(result interface{}, err error) *Result {
 		Code:   gconv.String(m["code"]),
 		Data:   m["data"],
 	}
-	r.Json = *gjson.New(r)
+	r.Json = *gjson.New(r.Data)
 	return r
 }

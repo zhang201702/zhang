@@ -50,6 +50,9 @@ func (api *ApiBase) Result(data interface{}, err error, r *ghttp.Request) error 
 	return api.OkResult(data, r)
 }
 
+func (api *ApiBase) Result2(result *z.Result, r *ghttp.Request) error {
+	return r.Response.WriteJson(*result)
+}
 func (api *ApiBase) GetToken(r *ghttp.Request) string {
 	return r.Header.Get("token")
 }
