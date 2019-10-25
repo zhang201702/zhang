@@ -66,11 +66,8 @@ func FreeHttpClient(client *http.Client) {
 }
 
 func init() {
-	conInfo := zconfig.Default()
-	if httpInfo, ok := conInfo["http"]; ok {
-		hi := httpInfo.(map[string]interface{})
-		if max, ok2 := hi["max_http_client"]; ok2 {
-			maxLen = gconv.Int(max)
-		}
+	max := zconfig.Conf.GetInt("http.max_http_client")
+	if max > 0 {
+		maxLen = gconv.Int(max)
 	}
 }

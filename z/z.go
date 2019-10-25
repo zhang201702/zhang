@@ -3,6 +3,8 @@ package z
 import (
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/util/gconv"
+	"log"
+	"reflect"
 )
 
 type Map map[string]interface{}
@@ -24,6 +26,8 @@ func NewResult(result interface{}, err error) *Result {
 		}
 	}
 	var m map[string]interface{}
+	tt := reflect.TypeOf(result)
+	log.Println(tt.String())
 	switch result.(type) {
 	case map[string]interface{}:
 		m = result.(map[string]interface{})
@@ -31,7 +35,7 @@ func NewResult(result interface{}, err error) *Result {
 		m = result.(Map)
 	default:
 		m = Map{
-			"status": true,
+			"result": true,
 			"data":   result,
 		}
 	}
