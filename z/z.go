@@ -14,7 +14,8 @@ type Result struct {
 	Status bool        `json:"status"`
 	Msg    string      `json:"msg"`
 	Data   interface{} `json:"data"`
-	Code   string      `json:code`
+	Code   string      `json:"code""`
+	Err    error       `json:"_"`
 }
 
 func NewResult(result interface{}, err error) *Result {
@@ -23,6 +24,13 @@ func NewResult(result interface{}, err error) *Result {
 			Status: false,
 			Msg:    err.Error(),
 			Data:   result,
+			Err:    err,
+		}
+	}
+	if result == nil {
+		return &Result{
+			Status: true,
+			Msg:    "",
 		}
 	}
 	var m map[string]interface{}
@@ -33,6 +41,11 @@ func NewResult(result interface{}, err error) *Result {
 		m = result.(map[string]interface{})
 	case Map:
 		m = result.(Map)
+	case string:
+		m = Map{
+			"result": true,
+			"msg":    result.(string),
+		}
 	default:
 		m = Map{
 			"result": true,
