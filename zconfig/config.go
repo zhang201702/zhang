@@ -11,16 +11,20 @@ var Debug = false
 var Conf *gjson.Json
 
 func init() {
-	if Conf == nil {
-		filePath := getDefaultConfigPath()
-		if filePath != "" {
-			m := z.Map{}
-			if err := zfile.OpenJson(filePath, &m); err != nil {
-				zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
-			}
-			Conf = gjson.New(m)
-			Debug = Conf.GetBool("Debug")
+	filePath := getDefaultConfigPath()
+	initDefault(filePath)
+}
+
+func initDefault(filePath string) {
+	if filePath != "" {
+		m := z.Map{}
+		if err := zfile.OpenJson(filePath, &m); err != nil {
+			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
 		}
+		Conf = gjson.New(m)
+		Debug = Conf.GetBool("Debug")
+	} else {
+		Conf = gjson.New(z.Map{})
 	}
 }
 
@@ -35,4 +39,9 @@ func getDefaultConfigPath() string {
 
 func Get(key string) interface{} {
 	return Conf.Get(key)
+}
+func SetDefaultPath(path string) {
+	if zfile.PathExists(path) {
+		initDefault(path)
+	}
 }
