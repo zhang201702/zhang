@@ -22,11 +22,15 @@ func NewResult(result interface{}, err error) *Result {
 			Err:    err,
 		}
 	}
+
 	if result == nil {
-		return &Result{
+		r := &Result{
 			Status: true,
 			Msg:    "",
+			Data:   make(map[string]interface{}),
 		}
+		r.Json = *gjson.New(r.Data)
+		return r
 	}
 	var m map[string]interface{}
 	switch result.(type) {
@@ -58,4 +62,12 @@ func NewResult(result interface{}, err error) *Result {
 func (result *Result) GetFloor64(pattern string, dNum int) float64 {
 	f := result.GetFloat64(pattern)
 	return Floor(f, dNum)
+}
+
+func String(params ...interface{}) string {
+	r := ""
+	for i := range params {
+		r += gconv.String(params[i])
+	}
+	return r
 }

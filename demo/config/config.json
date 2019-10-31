@@ -1,0 +1,11 @@
+{
+  "email" : {
+    "host" : "smtp.exmail.qq.com",
+    "port" : 465,
+    "userName" : "123@qq.com",
+    "password" : "1234",
+    "formName" : "1234"
+  },
+  "debug" : true
+
+}
