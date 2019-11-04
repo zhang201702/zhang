@@ -25,7 +25,15 @@ func init() {
 		zlog.LogError(err, "email.init")
 		return
 	}
+
+	//if name,err := gaes.Decrypt([]byte(emailConf.UserName), zconfig.CryptoKey, zconfig.CryptoVi); err == nil {
+	//	emailConf.UserName = string(name)
+	//}
+	//if pwd,err := gaes.Decrypt([]byte(emailConf.Password), zconfig.CryptoKey, zconfig.CryptoVi); err == nil {
+	//	emailConf.Password = string(pwd)
+	//}
 	emailConf = &temp
+
 }
 func SendEmail(toAddress, toName, subject, body string) error {
 	if emailConf == nil {

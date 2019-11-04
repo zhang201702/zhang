@@ -9,6 +9,8 @@ import (
 
 var Debug = false
 var Conf *gjson.Json
+var CryptoKey = []byte("zhang67890123456")
+var CryptoVi = []byte("1234567890123456")
 
 func init() {
 	filePath := getDefaultConfigPath()
