@@ -11,4 +11,5 @@ func TestEmail(t *testing.T) {
 	r.Set("a", "aaaaa")
 	r.Set("b", "bb")
 	znet.SendEmail("wat2288@163.com", "zhang", "test", "test")
+
 }

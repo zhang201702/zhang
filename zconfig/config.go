@@ -5,6 +5,7 @@ import (
 	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
+	"path/filepath"
 )
 
 var Debug = false
@@ -31,10 +32,13 @@ func initDefault(filePath string) {
 }
 
 func getDefaultConfigPath() string {
-	if zfile.PathExists("./config.json") {
-		return "./config.json"
-	} else if zfile.PathExists("./config/config.json") {
-		return "./config/config.json"
+	path, _ := filepath.Abs("config.json")
+	if zfile.PathExists(path) {
+		return path
+	}
+	path, _ = filepath.Abs("config/config.json")
+	if zfile.PathExists(path) {
+		return path
 	}
 	return ""
 }

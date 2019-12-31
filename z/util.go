@@ -15,12 +15,15 @@ func Floor(data interface{}, dNum int) float64 {
 
 func NewResult(result interface{}, err error) *Result {
 	if err != nil {
-		return &Result{
+
+		r := &Result{
 			Status: false,
 			Msg:    err.Error(),
 			Data:   result,
 			Err:    err,
 		}
+		r.Json = *gjson.New(r.Data)
+		return r
 	}
 
 	if result == nil {
