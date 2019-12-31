@@ -1,6 +1,9 @@
 package zlog
 
-import "log"
+import (
+	"github.com/zhang201702/zhang/zconfig"
+	"log"
+)
 
 func Log(args ...interface{}) {
 	logArgs := make([]interface{}, 0)
@@ -8,6 +11,12 @@ func Log(args ...interface{}) {
 		logArgs = append(logArgs, v, "==>")
 	}
 	log.Println(logArgs)
+}
+func Debug(args ...interface{}) {
+	if zconfig.Debug {
+		args = append(args, "Debug")
+		Log(args...)
+	}
 }
 
 func LogError(err error, args ...interface{}) {

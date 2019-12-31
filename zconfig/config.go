@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-var Debug = false
+var Debug = true
 var Conf *gjson.Json
 var CryptoKey = []byte("zhang67890123456")
 var CryptoVi = []byte("1234567890123456")
@@ -33,11 +33,13 @@ func initDefault(filePath string) {
 
 func getDefaultConfigPath() string {
 	path, _ := filepath.Abs("config.json")
-	if zfile.PathExists(path) {
+	zlog.Debug("config.json,path:", path)
+	if path != "" {
 		return path
 	}
 	path, _ = filepath.Abs("config/config.json")
-	if zfile.PathExists(path) {
+	zlog.Debug("config/config.json,path:", path)
+	if path != "" {
 		return path
 	}
 	return ""
