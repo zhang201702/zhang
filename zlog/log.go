@@ -5,6 +5,7 @@ import (
 )
 
 var IsDebug = true
+var IsInfo = true
 
 func Log(args ...interface{}) {
 	logArgs := make([]interface{}, 0)
@@ -13,14 +14,26 @@ func Log(args ...interface{}) {
 	}
 	log.Println(logArgs)
 }
+func LogError(err error, args ...interface{}) {
+	args = append(args, err)
+	Log(args...)
+}
+
 func Debug(args ...interface{}) {
 	if IsDebug {
-		args = append(args, "Debug")
+		args = append([]interface{}{"debug"}, args...)
 		Log(args...)
 	}
 }
 
-func LogError(err error, args ...interface{}) {
-	args = append(args, err)
+func Info(args ...interface{}) {
+	if IsInfo {
+		args = append([]interface{}{"info"}, args...)
+		Log(args...)
+	}
+}
+
+func Error(err error, args ...interface{}) {
+	args = append([]interface{}{"error", err}, args...)
 	Log(args...)
 }

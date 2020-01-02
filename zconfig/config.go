@@ -3,10 +3,10 @@ package zconfig
 import (
 	"errors"
 	"github.com/gogf/gf/encoding/gjson"
+	"github.com/gogf/gf/os/gfile"
 	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
-	"path/filepath"
 )
 
 var IsInit = false
@@ -37,20 +37,20 @@ func initDefault(filePath string) {
 	}
 }
 
-func getDefaultConfigPath() string {
-	path, _ := filepath.Abs("config.json")
-	zlog.Debug("config.json,path:", path)
+func getDefaultConfigPath() (path string) {
+
+	path, _ = gfile.Search("config.json")
+	zlog.Debug("path1", path)
 	if path != "" {
 		return path
 	}
-	path, _ = filepath.Abs("config/config.json")
-	zlog.Debug("config/config.json,path:", path)
+	path, _ = gfile.Search("config/config.json")
+	zlog.Debug("path2", path)
 	if path != "" {
 		return path
 	}
 	return ""
 }
-
 func Get(key string) interface{} {
 	return Conf.Get(key)
 }
