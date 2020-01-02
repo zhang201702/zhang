@@ -1,9 +1,10 @@
 package zlog
 
 import (
-	"github.com/zhang201702/zhang/zconfig"
 	"log"
 )
+
+var IsDebug = true
 
 func Log(args ...interface{}) {
 	logArgs := make([]interface{}, 0)
@@ -13,7 +14,7 @@ func Log(args ...interface{}) {
 	log.Println(logArgs)
 }
 func Debug(args ...interface{}) {
-	if zconfig.Debug {
+	if IsDebug {
 		args = append(args, "Debug")
 		Log(args...)
 	}

@@ -29,6 +29,7 @@ func initDefault(filePath string) {
 		}
 		Conf = gjson.New(m)
 		Debug = Conf.GetBool("Debug")
+		zlog.IsDebug = Debug
 		IsInit = true
 	} else {
 		zlog.LogError(errors.New("未找到配置信息"))
