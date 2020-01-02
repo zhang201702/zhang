@@ -1,6 +1,7 @@
 package zconfig
 
 import (
+	"errors"
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zfile"
@@ -8,6 +9,7 @@ import (
 	"path/filepath"
 )
 
+var IsInit = false
 var Debug = true
 var Conf *gjson.Json
 var CryptoKey = []byte("zhang67890123456")
@@ -21,12 +23,15 @@ func init() {
 func initDefault(filePath string) {
 	if filePath != "" {
 		m := z.Map{}
+		zlog.Log("配置信息", filePath)
 		if err := zfile.OpenJson(filePath, &m); err != nil {
 			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
 		}
 		Conf = gjson.New(m)
 		Debug = Conf.GetBool("Debug")
+		IsInit = true
 	} else {
+		zlog.LogError(errors.New("未找到配置信息"))
 		Conf = gjson.New(z.Map{})
 	}
 }
@@ -48,6 +53,7 @@ func getDefaultConfigPath() string {
 func Get(key string) interface{} {
 	return Conf.Get(key)
 }
+
 func SetDefaultPath(path string) {
 	if zfile.PathExists(path) {
 		initDefault(path)
