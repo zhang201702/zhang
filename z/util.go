@@ -4,6 +4,8 @@ import (
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/util/gconv"
 	"math"
+	"os/exec"
+	"runtime"
 )
 
 // 获取数值，dName小数位，向下取值
@@ -73,4 +75,20 @@ func String(params ...interface{}) string {
 		r += gconv.String(params[i])
 	}
 	return r
+}
+
+func OpenBrowse(url string) {
+	sysType := runtime.GOOS
+	if sysType == "windows" {
+		exec.Command(`cmd`, `/c`, `start`, url).Start()
+
+	} else {
+		exec.Command(`open`, url).Start()
+	}
+}
+
+func NewMap(data interface{}) (result Map) {
+	gj := gjson.New(data)
+	result = gj.ToMap()
+	return result
 }
