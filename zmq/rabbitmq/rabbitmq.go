@@ -1,4 +1,4 @@
-package mq
+package rabbitmq
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type RabbitMQInfo struct {
+type ConfigInfo struct {
 	Addr     string
 	UserName string
 	Password string
@@ -34,9 +34,9 @@ func Default() (*RabbitMQ, error) {
 	if info == nil {
 		return nil, errors.New("未找到默认的配置项[rabbitMQ]")
 	}
-	rabbitMQInfo := RabbitMQInfo{}
+	rabbitMQInfo := ConfigInfo{}
 	zconfig.Conf.GetStruct("rabbitMQ", &rabbitMQInfo)
-	//rabbitMQInfo := RabbitMQInfo{
+	//rabbitMQInfo := ConfigInfo{
 	//	Addr: gInfo.GetString("addr"),
 	//}
 	url := z.String("amqp://", rabbitMQInfo.UserName, ":", rabbitMQInfo.Password, "@", rabbitMQInfo.Addr, ":", rabbitMQInfo.Port)
