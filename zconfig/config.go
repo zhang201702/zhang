@@ -51,8 +51,8 @@ func getDefaultConfigPath() (path string) {
 	}
 	return ""
 }
-func Get(key string) interface{} {
-	return Conf.Get(key)
+func Get(key string, def ...interface{}) interface{} {
+	return Conf.Get(key, def...)
 }
 
 func SetDefaultPath(path string) {

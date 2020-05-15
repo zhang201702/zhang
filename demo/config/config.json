@@ -6,6 +6,11 @@
     "password" : "1234",
     "formName" : "1234"
   },
-  "debug" : true
-
+  "debug" : true,
+  "rabbitMQ": {
+    "addr" : "",
+    "userName" : "",
+    "password" : "",
+    "port" : ""
+  }
 }
