@@ -3,6 +3,7 @@ package z
 import (
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/util/gconv"
+	"github.com/google/uuid"
 	"math"
 	"os/exec"
 	"runtime"
@@ -91,4 +92,8 @@ func NewMap(data interface{}) (result Map) {
 	gj := gjson.New(data)
 	result = gj.ToMap()
 	return result
+}
+
+func UUID() string {
+	return uuid.New().String()
 }
