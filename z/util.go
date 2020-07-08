@@ -100,12 +100,11 @@ func UUID() string {
 	return uuid.New().String()
 }
 
-var dbDefault *gdb.DB = nil
+var dbDefault gdb.DB = nil
 
-func DB() *gdb.DB {
+func DB() gdb.DB {
 	if dbDefault == nil {
-		newDB := g.DB()
-		dbDefault = &newDB
+		dbDefault = g.DB()
 	}
 	return dbDefault
 }
