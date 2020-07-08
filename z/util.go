@@ -1,7 +1,9 @@
 package z
 
 import (
+	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/encoding/gjson"
+	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/google/uuid"
 	"math"
@@ -96,4 +98,14 @@ func NewMap(data interface{}) (result Map) {
 
 func UUID() string {
 	return uuid.New().String()
+}
+
+var dbDefault *gdb.DB = nil
+
+func DB() *gdb.DB {
+	if dbDefault == nil {
+		newDB := g.DB()
+		dbDefault = &newDB
+	}
+	return dbDefault
 }
