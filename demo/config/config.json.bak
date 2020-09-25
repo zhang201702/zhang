@@ -1,0 +1,18 @@
+{
+  "port" : 80,
+  "email" : {
+    "host" : "smtp.exmail.qq.com",
+    "port" : 465,
+    "userName" : "123@qq.com",
+    "password" : "1234",
+    "formName" : "1234"
+  },
+  "db" : "mysql:root:123456789@tcp(10.0.0.251:8307)/zentao",
+  "debug" : true,
+  "rabbitMQ": {
+    "addr" : "",
+    "userName" : "",
+    "password" : "",
+    "port" : ""
+  }
+}

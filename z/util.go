@@ -1,14 +1,10 @@
 package z
 
 import (
-	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/encoding/gjson"
-	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/google/uuid"
 	"math"
-	"os/exec"
-	"runtime"
 )
 
 // 获取数值，dName小数位，向下取值
@@ -80,16 +76,6 @@ func String(params ...interface{}) string {
 	return r
 }
 
-func OpenBrowse(url string) {
-	sysType := runtime.GOOS
-	if sysType == "windows" {
-		exec.Command(`cmd`, `/c`, `start`, url).Start()
-
-	} else {
-		exec.Command(`open`, url).Start()
-	}
-}
-
 func NewMap(data interface{}) (result Map) {
 	gj := gjson.New(data)
 	result = gj.ToMap()
@@ -98,13 +84,4 @@ func NewMap(data interface{}) (result Map) {
 
 func UUID() string {
 	return uuid.New().String()
-}
-
-var dbDefault gdb.DB = nil
-
-func DB() gdb.DB {
-	if dbDefault == nil {
-		dbDefault = g.DB()
-	}
-	return dbDefault
 }

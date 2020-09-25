@@ -1,16 +1,21 @@
 {
-  "email" : {
-    "host" : "smtp.exmail.qq.com",
-    "port" : 465,
-    "userName" : "123@qq.com",
-    "password" : "1234",
-    "formName" : "1234"
+  "email": {
+    "host": "smtp.exmail.qq.com",
+    "port": 465,
+    "userName": "123@qq.com",
+    "password": "1234",
+    "formName": "1234"
   },
-  "debug" : true,
+  "debug": true,
+  "db": {
+    "dcp" : "mysql:zhang_ge:Dctp@zhang2020168@tcp(rr-j6cx3dyvmma17f0b6eo.mysql.rds.aliyuncs.com:3306)/dcesys_b",
+    "min" : "mysql:zhang_ge:Dctp@zhang2020168@tcp(rm-j6cwg55b9d7cbr851io.mysql.rds.aliyuncs.com:3306)/mine_contract"
+  },
+  "db_mine": "mysql:root:123456789@tcp(10.0.0.251:8307)/zentao",
   "rabbitMQ": {
-    "addr" : "",
-    "userName" : "",
-    "password" : "",
-    "port" : ""
+    "addr": "",
+    "userName": "",
+    "password": "",
+    "port": ""
   }
 }

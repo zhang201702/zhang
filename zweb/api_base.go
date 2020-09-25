@@ -11,6 +11,10 @@ import (
 type ApiBase struct {
 }
 
+type Api interface {
+	Register(*ghttp.Server)
+}
+
 func (api *ApiBase) Ok(data interface{}) z.Map {
 	return z.Map{
 		"status": true,

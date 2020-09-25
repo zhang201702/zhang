@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/os/gfile"
-	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
 )
@@ -18,11 +17,12 @@ var CryptoVi = []byte("1234567890123456")
 func init() {
 	filePath := getDefaultConfigPath()
 	initDefault(filePath)
+
 }
 
 func initDefault(filePath string) {
 	if filePath != "" {
-		m := z.Map{}
+		m := new(map[string]interface{})
 		zlog.Log("配置信息", filePath)
 		if err := zfile.OpenJson(filePath, &m); err != nil {
 			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
@@ -33,7 +33,7 @@ func initDefault(filePath string) {
 		IsInit = true
 	} else {
 		zlog.LogError(errors.New("未找到配置信息"))
-		Conf = gjson.New(z.Map{})
+		Conf = gjson.New(new(map[string]interface{}))
 	}
 }
 
