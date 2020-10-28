@@ -8,7 +8,7 @@ import (
 )
 
 type QueryDao struct {
-	db gdb.DB
+	gdb.DB
 }
 
 type Query struct {
@@ -19,8 +19,8 @@ type Query struct {
 
 func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
 
-	dao.db.SetDebug(true)
-	q, err := dao.db.GetAll(query, args...)
+	dao.SetDebug(true)
+	q, err := dao.GetAll(query, args...)
 	if err != nil {
 		zlog.Error(err, "query 异常")
 	}
@@ -28,8 +28,8 @@ func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
 }
 func (dao *QueryDao) QueryOne(query string, args ...interface{}) g.Map {
 
-	dao.db.SetDebug(true)
-	q, err := dao.db.GetOne(query, args...)
+	dao.SetDebug(true)
+	q, err := dao.GetOne(query, args...)
 	if err != nil {
 		zlog.Error(err, "query 异常")
 	}
@@ -45,8 +45,8 @@ func (dao *QueryDao) Condition(sql string, objects []interface{}, data interface
 }
 func (dao *QueryDao) QueryEntity(result interface{}, query string, args ...interface{}) {
 
-	dao.db.SetDebug(true)
-	err := dao.db.GetStructs(result, query, args...)
+	dao.SetDebug(true)
+	err := dao.GetStructs(result, query, args...)
 
 	if err != nil {
 		zlog.Error(err, "queryEntity 异常")
