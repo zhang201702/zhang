@@ -1,4 +1,4 @@
-package dao
+package zdao
 
 import (
 	"github.com/gogf/gf/database/gdb"
