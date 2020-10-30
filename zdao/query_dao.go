@@ -19,7 +19,6 @@ type Query struct {
 
 func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
 
-	dao.SetDebug(true)
 	q, err := dao.GetAll(query, args...)
 	if err != nil {
 		zlog.Error(err, "query 异常")
@@ -28,10 +27,9 @@ func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
 }
 func (dao *QueryDao) QueryOne(query string, args ...interface{}) g.Map {
 
-	dao.SetDebug(true)
 	q, err := dao.GetOne(query, args...)
 	if err != nil {
-		zlog.Error(err, "query 异常")
+		zlog.Error(err, "QueryOne 异常")
 	}
 	return q.ToMap()
 }
