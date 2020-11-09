@@ -34,7 +34,7 @@ func (dao *QueryDao) QueryOne(query string, args ...interface{}) g.Map {
 	return q.ToMap()
 }
 func (dao *QueryDao) QueryStruct(objPointer interface{}, query string, args ...interface{}) {
-	dao.SetDebug(true)
+
 	err := dao.GetStructs(objPointer, query, args...)
 	if err != nil {
 		zlog.Error(err, "QueryStructs 异常")
@@ -42,7 +42,7 @@ func (dao *QueryDao) QueryStruct(objPointer interface{}, query string, args ...i
 }
 
 func (dao *QueryDao) QueryStructs(objPointerSlice interface{}, query string, args ...interface{}) {
-	dao.SetDebug(true)
+
 	err := dao.GetStructs(objPointerSlice, query, args...)
 	if err != nil {
 		zlog.Error(err, "QueryStructs 异常")
@@ -57,7 +57,6 @@ func (dao *QueryDao) Condition(sql string, objects []interface{}, data interface
 }
 func (dao *QueryDao) QueryEntity(result interface{}, query string, args ...interface{}) {
 
-	dao.SetDebug(true)
 	err := dao.GetStructs(result, query, args...)
 
 	if err != nil {
