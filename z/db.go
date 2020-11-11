@@ -48,19 +48,14 @@ func init() {
 获取 DB对象.
   默认
 */
-func DB() gdb.DB {
-	if dbDefault == nil {
-		dbDefault = g.DB()
+func DB(names ...string) gdb.DB {
+	if len(names) == 0 {
+		if dbDefault == nil {
+			dbDefault = g.DB()
+		}
+		return dbDefault
 	}
-	return dbDefault
-
-}
-
-/**
-获取 DB对象.
-  name : 配置名称,默认null
-*/
-func GetDB(name string) gdb.DB {
+	name := names[0]
 
 	db, err := gdb.New(name)
 	if err != nil {
@@ -69,4 +64,12 @@ func GetDB(name string) gdb.DB {
 	}
 	return db
 
+}
+
+/**
+获取 DB对象.
+  name : 配置名称,默认null
+*/
+func GetDB(name string) gdb.DB {
+	return DB(name)
 }
