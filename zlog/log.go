@@ -14,10 +14,10 @@ func Log(args ...interface{}) {
 	for _, v := range args {
 		vt := reflect.TypeOf(v)
 		vtK := vt.Kind()
-		if vtK == reflect.Ptr {
-
-			vtK = reflect.TypeOf(*v).Kind()
-		}
+		//if vtK == reflect.Ptr {
+		//
+		//	vtK = reflect.TypeOf(*v).Kind()
+		//}
 		if vtK == reflect.Struct {
 			v, _ = gjson.New(v).ToJsonString()
 		}

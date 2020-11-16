@@ -78,9 +78,9 @@ func (query *Query) And(where string, args ...interface{}) {
 	}
 	query.Args = append(query.Args, args...)
 }
-func (query *Query) DefaultAnd(defaultWhere, where string, args ...interface{}) {
+func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) {
 	if len(args) == 0 || args[0] == nil {
-		query.Append(defaultWhere)
+		query.Append(" AND " + defaultWhere)
 		return
 	}
 	query.And(where, args)
