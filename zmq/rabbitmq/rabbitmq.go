@@ -17,9 +17,11 @@ type ConfigInfo struct {
 }
 
 type MessageHandler struct {
+	QueueName  string
 	Exchange   string
 	Key        string
 	Handler    func(exchange string, body []byte)
+	AutoDelete bool
 	RetryCount int
 }
 type RabbitMQ struct {
@@ -61,6 +63,7 @@ func Default() (*RabbitMQ, error) {
 	}()
 	return &mq, nil
 }
+
 func (mq *RabbitMQ) reload() {
 	mq.RetryCount++
 	if conn, err := amqp.Dial(mq.Url); err == nil {
@@ -86,17 +89,12 @@ func (mh *MessageHandler) doConsume(conn *amqp.Connection) error {
 		zlog.LogError(err.(error), "rabbitmq", mh.Exchange, "new Channel")
 		return err
 	}
-	err = ch.ExchangeDeclarePassive(
-		mh.Exchange, // name
-		"fanout",    // type
-		true,        // durable
-		false,       // auto-deleted
-		false,       // internal
-		false,       // no-wait
-		nil,         // arguments
-	)
 
-	queueName := z.String("go.", mh.Exchange, ".", mh.Key)
+	queueName := z.String("go.", mh.Exchange)
+	if mh.Key != "" {
+		queueName += z.String(".", mh.Key)
+	}
+	mh.QueueName = queueName
 	q, err := ch.QueueDeclare(
 		queueName, // name
 		false,     // durable
@@ -106,7 +104,22 @@ func (mh *MessageHandler) doConsume(conn *amqp.Connection) error {
 		nil,       // arguments
 	)
 
-	err = ch.QueueBind(q.Name, mh.Key, mh.Exchange, false, nil)
+	if mh.Exchange != "" {
+		err = ch.ExchangeDeclarePassive(
+			mh.Exchange,   // name
+			"fanout",      // type
+			true,          // durable
+			mh.AutoDelete, // auto-deleted
+			false,         // internal
+			false,         // no-wait
+			nil,           // arguments
+		)
+		if err != nil {
+			zlog.Error(err, "rabbitmq.doConsume.ExchangeDeclarePassive 异常", mh.Exchange)
+			return err
+		}
+		err = ch.QueueBind(q.Name, mh.Key, mh.Exchange, false, nil)
+	}
 
 	msgs, err := ch.Consume(q.Name, q.Name,
 		false, // auto-ack
@@ -147,6 +160,12 @@ func (mh *MessageHandler) exec(body []byte) {
 
 func (mq *RabbitMQ) Consume(exchange, key string, handler func(exchange string, body []byte)) error {
 	mh := &MessageHandler{Exchange: exchange, Key: key, Handler: handler}
+	mq.Handlers = append(mq.Handlers, mh)
+	return mh.doConsume(mq.Conn)
+}
+
+func (mq *RabbitMQ) ConsumeAutoDelete(exchange, key string, handler func(exchange string, body []byte)) error {
+	mh := &MessageHandler{Exchange: exchange, Key: key, Handler: handler, AutoDelete: true}
 	mq.Handlers = append(mq.Handlers, mh)
 	return mh.doConsume(mq.Conn)
 }
