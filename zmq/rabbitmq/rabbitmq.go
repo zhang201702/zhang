@@ -147,9 +147,9 @@ func (mh *MessageHandler) doConsume(conn *amqp.Connection) error {
 }
 
 func (mh *MessageHandler) exec(body []byte) {
-	start := time.Now().Unix()
+	//start := time.Now().Unix()
 	defer func() {
-		zlog.Log("rabbitmq", mh.Exchange, "start", start, "end", time.Now().Unix(), "spend", time.Now().Unix()-start)
+		//zlog.Log("rabbitmq", mh.Exchange, "start", start, "end", time.Now().Unix(), "spend", time.Now().Unix()-start)
 		if err := recover(); err != nil {
 			zlog.LogError(err.(error), "rabbitmq", mh.Exchange)
 		}

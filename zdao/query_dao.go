@@ -1,6 +1,7 @@
 package zdao
 
 import (
+	"database/sql"
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
 	"github.com/zhang201702/zhang/zlog"
@@ -33,20 +34,31 @@ func (dao *QueryDao) QueryOne(query string, args ...interface{}) g.Map {
 	}
 	return q.ToMap()
 }
-func (dao *QueryDao) QueryStruct(objPointer interface{}, query string, args ...interface{}) {
+func (dao *QueryDao) QueryStruct(objPointer interface{}, query string, args ...interface{}) error {
 
-	err := dao.GetStructs(objPointer, query, args...)
-	if err != nil {
-		zlog.Error(err, "QueryStructs 异常")
+	err := dao.GetStruct(objPointer, query, args...)
+	if err == sql.ErrNoRows {
+		return err
 	}
+	if err != nil {
+		zlog.Error(err, "QueryStruct 异常")
+		return err
+	}
+	return nil
 }
 
-func (dao *QueryDao) QueryStructs(objPointerSlice interface{}, query string, args ...interface{}) {
+func (dao *QueryDao) QueryStructs(objPointerSlice interface{}, query string, args ...interface{}) error {
 
 	err := dao.GetStructs(objPointerSlice, query, args...)
+
+	if err == sql.ErrNoRows {
+		return err
+	}
 	if err != nil {
 		zlog.Error(err, "QueryStructs 异常")
+		return err
 	}
+	return nil
 }
 func (dao *QueryDao) Condition(sql string, objects []interface{}, data interface{}, sqlConfName, sqlConf string) (string, []interface{}) {
 	if data != nil {
