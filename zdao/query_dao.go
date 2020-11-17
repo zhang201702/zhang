@@ -118,9 +118,9 @@ func (query *Query) ToList() g.List {
 func (query *Query) ToMap() g.Map {
 	return query.dao.QueryOne(query.Sql, query.Args...)
 }
-func (query *Query) ToStructs(objPointerSlice interface{}) {
-	query.dao.QueryStructs(objPointerSlice, query.Sql, query.Args)
+func (query *Query) ToStructs(objPointerSlice interface{}) error {
+	return query.dao.QueryStructs(objPointerSlice, query.Sql, query.Args)
 }
-func (query *Query) ToStruct(objPointer interface{}) {
-	query.dao.QueryStruct(objPointer, query.Sql, query.Args)
+func (query *Query) ToStruct(objPointer interface{}) error {
+	return query.dao.QueryStruct(objPointer, query.Sql, query.Args)
 }
