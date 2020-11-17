@@ -83,7 +83,7 @@ func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) 
 		query.Append(" AND " + defaultWhere)
 		return
 	}
-	query.And(where, args)
+	query.And(where, args...)
 }
 func (query *Query) GroupBy(sql string) string {
 	return query.Append("GROUP BY " + sql)
