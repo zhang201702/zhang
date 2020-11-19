@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
+	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
 	"strings"
 )
@@ -21,7 +22,7 @@ type Query struct {
 func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
 
 	q, err := dao.GetAll(query, args...)
-	if err != nil {
+	if err != nil && zconfig.Debug {
 		zlog.Error(err, "query 异常")
 	}
 	return q.List()
@@ -29,7 +30,7 @@ func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
 func (dao *QueryDao) QueryOne(query string, args ...interface{}) g.Map {
 
 	q, err := dao.GetOne(query, args...)
-	if err != nil {
+	if err != nil && zconfig.Debug {
 		zlog.Error(err, "QueryOne 异常")
 	}
 	return q.ToMap()
@@ -40,7 +41,7 @@ func (dao *QueryDao) QueryStruct(objPointer interface{}, query string, args ...i
 	if err == sql.ErrNoRows {
 		return err
 	}
-	if err != nil {
+	if err != nil && zconfig.Debug {
 		zlog.Error(err, "QueryStruct 异常")
 		return err
 	}
@@ -54,7 +55,7 @@ func (dao *QueryDao) QueryStructs(objPointerSlice interface{}, query string, arg
 	if err == sql.ErrNoRows {
 		return err
 	}
-	if err != nil {
+	if err != nil && zconfig.Debug {
 		zlog.Error(err, "QueryStructs 异常")
 		return err
 	}
