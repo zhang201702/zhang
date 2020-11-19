@@ -96,23 +96,23 @@ func (mh *MessageHandler) doConsume(conn *amqp.Connection) error {
 	}
 	mh.QueueName = queueName
 	q, err := ch.QueueDeclare(
-		queueName, // name
-		false,     // durable
-		false,     // delete when unused
-		false,     // exclusive
-		false,     // no-wait
-		nil,       // arguments
+		queueName,     // name
+		false,         // durable
+		mh.AutoDelete, // delete when unused
+		false,         // exclusive
+		false,         // no-wait
+		nil,           // arguments
 	)
 
 	if mh.Exchange != "" {
 		err = ch.ExchangeDeclarePassive(
-			mh.Exchange,   // name
-			"fanout",      // type
-			true,          // durable
-			mh.AutoDelete, // auto-deleted
-			false,         // internal
-			false,         // no-wait
-			nil,           // arguments
+			mh.Exchange, // name
+			"fanout",    // type
+			true,        // durable
+			false,       // auto-deleted
+			false,       // internal
+			false,       // no-wait
+			nil,         // arguments
 		)
 		if err != nil {
 			zlog.Error(err, "rabbitmq.doConsume.ExchangeDeclarePassive 异常", mh.Exchange)
