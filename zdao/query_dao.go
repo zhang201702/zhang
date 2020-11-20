@@ -43,9 +43,8 @@ func (dao *QueryDao) QueryStruct(objPointer interface{}, query string, args ...i
 	}
 	if err != nil && zconfig.Debug {
 		zlog.Error(err, "QueryStruct 异常")
-		return err
 	}
-	return nil
+	return err
 }
 
 func (dao *QueryDao) QueryStructs(objPointerSlice interface{}, query string, args ...interface{}) error {
@@ -57,9 +56,8 @@ func (dao *QueryDao) QueryStructs(objPointerSlice interface{}, query string, arg
 	}
 	if err != nil && zconfig.Debug {
 		zlog.Error(err, "QueryStructs 异常")
-		return err
 	}
-	return nil
+	return err
 }
 func (dao *QueryDao) Condition(sql string, objects []interface{}, data interface{}, sqlConfName, sqlConf string) (string, []interface{}) {
 	if data != nil {
