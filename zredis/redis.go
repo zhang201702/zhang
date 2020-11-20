@@ -24,7 +24,7 @@ func (redis *Redis) Set(key interface{}, value string, dur time.Duration) error 
 			args = append(args, "ex", int64(dur/time.Second))
 		}
 	}
-	_, err := redis.Do("SET", args)
+	_, err := redis.Do("SET", args...)
 	return err
 }
 
