@@ -143,6 +143,7 @@ func (mh *MessageHandler) doConsume(conn *amqp.Connection) error {
 		}
 
 	}()
+
 	return err
 }
 
@@ -168,4 +169,18 @@ func (mq *RabbitMQ) ConsumeAutoDelete(exchange, key string, handler func(exchang
 	mh := &MessageHandler{Exchange: exchange, Key: key, Handler: handler, AutoDelete: true}
 	mq.Handlers = append(mq.Handlers, mh)
 	return mh.doConsume(mq.Conn)
+}
+
+func (mq *RabbitMQ) SendMsg(exchange, key, msg string) {
+	ch, err := mq.Conn.Channel()
+	if err != nil {
+		zlog.Error(err, "rabbitmq.SendMsg.Channel() 异常", exchange, key, msg)
+		return
+	}
+	err = ch.Publish(exchange, key, false, false, amqp.Publishing{
+		ContentType: "text/plain",
+		Body:        []byte(msg)})
+	if err != nil {
+		zlog.Error(err, "rabbitmq.SendMsg.Publish 异常", exchange, key, msg)
+	}
 }
