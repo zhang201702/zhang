@@ -23,7 +23,7 @@ func init() {
 
 func initDefault(filePath string) {
 	if filePath != "" {
-		innerConfig := new(map[string]interface{})
+		innerConfig = make(map[string]interface{})
 		zlog.Log("配置信息", filePath)
 		if err := zfile.OpenJson(filePath, &innerConfig); err != nil {
 			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
