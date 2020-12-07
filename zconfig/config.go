@@ -10,6 +10,7 @@ import (
 
 var IsInit = false
 var Debug = true
+var innerConfig map[string]interface{}
 var Conf *gjson.Json
 var CryptoKey = []byte("zhang67890123456")
 var CryptoVi = []byte("1234567890123456")
@@ -22,12 +23,12 @@ func init() {
 
 func initDefault(filePath string) {
 	if filePath != "" {
-		m := new(map[string]interface{})
+		innerConfig := new(map[string]interface{})
 		zlog.Log("配置信息", filePath)
-		if err := zfile.OpenJson(filePath, &m); err != nil {
+		if err := zfile.OpenJson(filePath, &innerConfig); err != nil {
 			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
 		}
-		Conf = gjson.New(m)
+		Conf = gjson.New(innerConfig)
 		Debug = Conf.GetBool("Debug")
 		zlog.IsDebug = Debug
 		IsInit = true
@@ -58,5 +59,11 @@ func Get(key string, def ...interface{}) interface{} {
 func SetDefaultPath(path string) {
 	if zfile.PathExists(path) {
 		initDefault(path)
+	}
+}
+
+func AddConfig(newConfig map[string]interface{}) {
+	for k, v := range newConfig {
+		innerConfig[k] = v
 	}
 }
