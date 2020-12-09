@@ -14,14 +14,24 @@ func Default() *ServerGF {
 	server := &ServerGF{
 		Server: g.Server(),
 	}
+
+	server.SetServerRoot("html")
+
+	server.BindHandler("/health", func(r *ghttp.Request) {
+		r.Response.Write("ok")
+	})
+	server.BindHandler("/info", func(r *ghttp.Request) {
+		r.Response.Write("ok")
+	})
+	return server
+}
+
+func (server *ServerGF) Start() {
+
 	port := zconfig.Conf.GetInt("port")
 	if port == 0 {
 		port = 80
 	}
-	server.SetServerRoot("html")
 	server.SetPort(port)
-	server.BindHandler("/health", func(r *ghttp.Request) {
-		r.Response.Write("ok")
-	})
-	return server
+	server.Server.Start()
 }
