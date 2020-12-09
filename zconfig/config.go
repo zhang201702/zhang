@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/os/gfile"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
+	"os"
 )
 
 var IsInit = false
@@ -16,22 +17,32 @@ var CryptoKey = []byte("zhang67890123456")
 var CryptoVi = []byte("1234567890123456")
 
 func init() {
-	filePath := getDefaultConfigPath()
+
+	filePath := ""
+	if len(os.Args) > 1 {
+		filePath = os.Args[1]
+	}
+	filePath, _ = gfile.Search(filePath)
+	if filePath == "" {
+		filePath = getDefaultConfigPath()
+	}
 	initDefault(filePath)
 
 }
 
 func initDefault(filePath string) {
+	IsInit = true
+	innerConfig = make(map[string]interface{})
+	Conf = gjson.New(innerConfig)
 	if filePath != "" {
-		innerConfig = make(map[string]interface{})
+
 		zlog.Log("配置信息", filePath)
 		if err := zfile.OpenJson(filePath, &innerConfig); err != nil {
 			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
 		}
-		Conf = gjson.New(innerConfig)
 		Debug = Conf.GetBool("Debug")
 		zlog.IsDebug = Debug
-		IsInit = true
+
 	} else {
 		zlog.LogError(errors.New("未找到配置信息"))
 		Conf = gjson.New(new(map[string]interface{}))
