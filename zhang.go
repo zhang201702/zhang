@@ -23,15 +23,12 @@ func Default() *ServerGF {
 	server.BindHandler("/info", func(r *ghttp.Request) {
 		r.Response.Write("ok")
 	})
-	return server
-}
-
-func (server *ServerGF) Start() {
-
 	port := zconfig.Conf.GetInt("port")
 	if port == 0 {
 		port = 80
 	}
 	server.SetPort(port)
 	server.Server.Start()
+
+	return server
 }
