@@ -22,7 +22,7 @@ func init() {
 	if len(os.Args) > 1 {
 		filePath = os.Args[1]
 	}
-	filePath, _ = gfile.Search(filePath)
+	//filePath, _ = gfile.Search(filePath)
 	if filePath == "" {
 		filePath = getDefaultConfigPath()
 	}
@@ -37,6 +37,7 @@ func initDefault(filePath string) {
 	if filePath != "" {
 
 		zlog.Log("配置信息", filePath)
+
 		if err := zfile.OpenJson(filePath, &innerConfig); err != nil {
 			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
 		}

@@ -22,7 +22,7 @@ func init() {
 	//	emailConfig := zconfig.Conf.GetMap("email")
 	temp := EmailConf{}
 	if err := zconfig.Conf.GetStruct("email", &temp); err != nil {
-		zlog.LogError(err, "email.init")
+		zlog.Log(err, "email.init", "未找找配置")
 		return
 	}
 
