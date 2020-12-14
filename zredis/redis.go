@@ -1,6 +1,7 @@
 package zredis
 
 import (
+	"github.com/gogf/gf/container/gvar"
 	"github.com/gogf/gf/database/gredis"
 	"github.com/gogf/gf/util/gconv"
 	"time"
@@ -56,9 +57,9 @@ func (redis *Redis) Do(command string, args ...interface{}) (interface{}, error)
 	}
 	return redis.Redis.Do(command, args...)
 }
-func (redis *Redis) DoVar(command string, args ...interface{}) (interface{}, error) {
+func (redis *Redis) DoVar(command string, args ...interface{}) (*gvar.Var, error) {
 	if redis.err != nil {
 		return nil, redis.err
 	}
-	return redis.Redis.Do(command, args...)
+	return redis.Redis.DoVar(command, args...)
 }
