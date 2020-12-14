@@ -47,9 +47,11 @@ func GetRedis(name ...string) (result *Redis) {
 			case string:
 				err1 = errors.New(utils.String(err1.Error(), ",info:", err.(string)))
 			}
+			zlog.Error(err1, "zredis.GetRedis 异常", name)
 			result = &Redis{err: err1}
+			return
 		}
-
+		zlog.Log("获取Redis 成功", name)
 	}()
 	result = &Redis{
 		Redis: g.Redis(name...),
