@@ -12,6 +12,9 @@ var IsInfo = true
 func Log(args ...interface{}) {
 	logArgs := make([]interface{}, 0)
 	for _, v := range args {
+		if v == nil {
+			v = "nil"
+		}
 		vt := reflect.TypeOf(v)
 		vtK := vt.Kind()
 		//if vtK == reflect.Ptr {

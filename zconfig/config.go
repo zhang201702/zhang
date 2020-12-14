@@ -2,11 +2,12 @@ package zconfig
 
 import (
 	"errors"
+	"flag"
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/os/gfile"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
-	"os"
+	"testing"
 )
 
 var IsInit = false
@@ -17,11 +18,11 @@ var CryptoKey = []byte("zhang67890123456")
 var CryptoVi = []byte("1234567890123456")
 
 func init() {
+	testing.Init()
+	var filePath string
+	flag.StringVar(&filePath, "c", "", "配置文件路径: -c config.json")
+	flag.Parse()
 
-	filePath := ""
-	if len(os.Args) > 1 {
-		filePath = os.Args[1]
-	}
 	//filePath, _ = gfile.Search(filePath)
 	if filePath == "" {
 		filePath = getDefaultConfigPath()

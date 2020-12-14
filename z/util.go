@@ -4,6 +4,7 @@ import (
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/google/uuid"
+	"github.com/zhang201702/zhang/utils"
 	"math"
 )
 
@@ -69,11 +70,7 @@ func (result *Result) GetFloor64(pattern string, dNum int) float64 {
 }
 
 func String(params ...interface{}) string {
-	r := ""
-	for i := range params {
-		r += gconv.String(params[i])
-	}
-	return r
+	return utils.String(params...)
 }
 
 func NewMap(data interface{}) (result Map) {

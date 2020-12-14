@@ -8,10 +8,13 @@ import (
 
 type Redis struct {
 	*gredis.Redis
+	err error
 }
 
 func (redis *Redis) Set(key interface{}, value string, dur time.Duration) error {
-
+	if redis.err != nil {
+		return redis.err
+	}
 	args := make([]interface{}, 2, 4)
 	args[0] = key
 	args[1] = value
@@ -29,14 +32,33 @@ func (redis *Redis) Set(key interface{}, value string, dur time.Duration) error 
 }
 
 func (redis *Redis) Get(key interface{}) (string, error) {
+	if redis.err != nil {
+		return "", redis.err
+	}
 	result, err := redis.Do("GET", key)
 	return gconv.String(result), err
 }
 
 func (redis *Redis) Key(patten string) ([]interface{}, error) {
+	if redis.err != nil {
+		return nil, redis.err
+	}
 	result, err := redis.Do("KEYS", patten)
 	if err != nil {
 		panic(err)
 	}
 	return result.([]interface{}), err
+}
+
+func (redis *Redis) Do(command string, args ...interface{}) (interface{}, error) {
+	if redis.err != nil {
+		return nil, redis.err
+	}
+	return redis.Redis.Do(command, args...)
+}
+func (redis *Redis) DoVar(command string, args ...interface{}) (interface{}, error) {
+	if redis.err != nil {
+		return nil, redis.err
+	}
+	return redis.Redis.Do(command, args...)
 }
