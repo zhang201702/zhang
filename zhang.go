@@ -22,6 +22,10 @@ func Default() *ServerGF {
 	}
 	if gfile.IsDir(htmlPath) {
 		server.SetServerRoot("html")
+	} else {
+		server.BindHandler("/", func(r *ghttp.Request) {
+			r.Response.Write("welcome api!!!")
+		})
 	}
 
 	server.SetRouteOverWrite(true)
