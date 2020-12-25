@@ -101,7 +101,7 @@ func (query *Query) From(from ...interface{}) *Query {
 		if len(from) >= 2 {
 			alas = gconv.String(from[1])
 		}
-		query.Sql += utils.String(" ( ", temp.Sql, " ) ", alas)
+		query.Sql += utils.String(" FROM ( ", temp.Sql, " ) ", alas)
 		query.Args = append(query.Args, temp.Args...)
 	default:
 	}
