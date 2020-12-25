@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
+	"github.com/gogf/gf/util/gconv"
+	"github.com/zhang201702/zhang/utils"
 	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
 	"strings"
@@ -14,9 +16,10 @@ type QueryDao struct {
 }
 
 type Query struct {
-	dao  *QueryDao
-	Sql  string
-	Args []interface{}
+	dao       *QueryDao
+	Sql       string
+	Args      []interface{}
+	haveWhere bool
 }
 
 func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
@@ -77,17 +80,56 @@ func (dao *QueryDao) QueryEntity(result interface{}, query string, args ...inter
 
 func (dao *QueryDao) CreateQuery(sql string, args ...interface{}) *Query {
 	return &Query{
-		Sql: sql, Args: args, dao: dao,
+		Sql: sql, Args: args, dao: dao, haveWhere: false,
 	}
 }
-func (query *Query) And(where string, args ...interface{}) {
+func (query *Query) Select(fields string) *Query {
+	query.Sql += utils.String("SELECT ", fields)
+	return query
+}
+func (query *Query) From(from ...interface{}) *Query {
+	if len(from) == 0 {
+		return query
+	}
+	firstP := from[0]
+	switch firstP.(type) {
+	case string:
+		query.Sql += utils.String(" FROM ", from)
+	case *Query:
+		temp := firstP.(*Query)
+		alas := "t"
+		if len(from) >= 2 {
+			alas = gconv.String(from[1])
+		}
+		query.Sql += utils.String(" ( ", temp.Sql, " ) ", alas)
+		query.Args = append(query.Args, temp.Args...)
+	default:
+	}
+	return query
+}
+func (query *Query) Where(where string, args ...interface{}) *Query {
+	if query.haveWhere {
+		return query.And(where, args...)
+	}
 	if len(args) == 0 || args[0] == nil {
-		return
+		return query
+	}
+	if where != "" {
+		query.Sql += " WHERE " + where
+	}
+	query.Args = append(query.Args, args...)
+	query.haveWhere = true
+	return query
+}
+func (query *Query) And(where string, args ...interface{}) *Query {
+	if len(args) == 0 || args[0] == nil {
+		return query
 	}
 	if where != "" {
 		query.Sql += " AND " + where
 	}
 	query.Args = append(query.Args, args...)
+	return query
 }
 func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) {
 	if len(args) == 0 || args[0] == nil {
@@ -96,6 +138,7 @@ func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) 
 	}
 	query.And(where, args...)
 }
+
 func (query *Query) GroupBy(sql string) string {
 	return query.Append("GROUP BY " + sql)
 }
@@ -103,7 +146,6 @@ func (query *Query) GroupBy(sql string) string {
 func (query *Query) OrderBy(sql string) string {
 	return query.Append("ORDER BY " + sql)
 }
-
 func (query *Query) Append(sql string) string {
 	query.Sql += " " + sql
 	return query.Sql
@@ -120,6 +162,7 @@ func (query *Query) ToMap() g.Map {
 func (query *Query) ToStructs(objPointerSlice interface{}) error {
 	return query.dao.QueryStructs(objPointerSlice, query.Sql, query.Args)
 }
+
 func (query *Query) ToStruct(objPointer interface{}) error {
 	return query.dao.QueryStruct(objPointer, query.Sql, query.Args)
 }
