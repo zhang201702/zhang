@@ -30,6 +30,14 @@ func (dao *QueryDao) Query(query string, args ...interface{}) g.List {
 	}
 	return q.List()
 }
+func (dao *QueryDao) QueryValue(query string, args ...interface{}) *g.Var {
+
+	q, err := dao.GetValue(query, args...)
+	if err != nil && zconfig.Debug {
+		zlog.Error(err, "QueryOne 异常")
+	}
+	return q
+}
 func (dao *QueryDao) QueryOne(query string, args ...interface{}) g.Map {
 
 	q, err := dao.GetOne(query, args...)
