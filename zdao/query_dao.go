@@ -174,3 +174,6 @@ func (query *Query) ToStructs(objPointerSlice interface{}) error {
 func (query *Query) ToStruct(objPointer interface{}) error {
 	return query.dao.QueryStruct(objPointer, query.Sql, query.Args)
 }
+func (query *Query) QueryValue() *g.Var {
+	return query.dao.QueryValue(query.Sql, query.Args)
+}

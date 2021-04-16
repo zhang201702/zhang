@@ -1,0 +1,165 @@
+package zdao
+
+import (
+	"github.com/gogf/gf/frame/g"
+	"github.com/gogf/gf/util/gconv"
+	"github.com/zhang201702/zhang/utils"
+	"strings"
+)
+
+type Query struct {
+	dao       *QueryDao
+	Sql       string
+	Args      []interface{}
+	haveWhere bool
+	fields	  []string
+	groups	  []string
+	selectStr	string
+	orderStr   string
+	groupByStr string
+	fromStr 	  string
+	wheres	  []string
+}
+
+func CreateQuery() *Query{
+	return &Query{
+		Args: make([]interface{},0),
+		fields: make([]string,0),
+		groups: make([]string,0),
+		wheres: make([]string,0),
+	}
+}
+
+func (query *Query) append(sql string) string {
+	query.Sql += " " + sql
+	return query.Sql
+}
+
+
+func (query *Query) Select(fields ...string) *Query {
+	query.fields = append(query.fields, fields...)
+	query.Sql += utils.String("SELECT ", fields)
+	return query
+}
+func (query *Query) From(from ...interface{}) *Query {
+	if len(from) == 0 {
+		return query
+	}
+	firstP := from[0]
+	switch firstP.(type) {
+	case string:
+		query.Sql += " FROM " + utils.String(from)
+		query.fromStr = utils.Join(",", from...)
+	case *Query:
+		temp := firstP.(*Query)
+		alas := "t"
+		if len(from) >= 2 {
+			alas = gconv.String(from[1])
+		}
+		query.fromStr = utils.String(" FROM ( ", temp.Sql, " ) ", alas)
+		query.Sql += query.fromStr
+		query.Args = append(query.Args, temp.Args...)
+	default:
+	}
+	return query
+}
+func (query *Query) Where(where string, args ...interface{}) *Query {
+	if query.haveWhere {
+		return query.And(where, args...)
+	}
+	if len(args) == 0 || args[0] == nil {
+		return query
+	}
+	if where != "" {
+		query.wheres = append(query.wheres, where)
+		query.Sql += " WHERE " + where
+	}
+	query.Args = append(query.Args, args...)
+	query.haveWhere = true
+	return query
+}
+func (query *Query) And(where string, args ...interface{}) *Query {
+	if len(args) == 0 || args[0] == nil {
+		return query
+	}
+	if where != "" {
+		query.wheres = append(query.wheres, where)
+		query.Sql += " AND " + where
+	}
+	query.Args = append(query.Args, args...)
+	return query
+}
+func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) {
+	if len(args) == 0 || args[0] == nil {
+		query.append(" AND " + defaultWhere)
+		query.wheres = append(query.wheres, defaultWhere)
+		return
+	}
+	query.And(where, args...)
+}
+func (query *Query) GroupBy(sql string) string {
+	query.groupByStr = sql
+	return query.append("GROUP BY " + sql)
+}
+func (query *Query) OrderBy(sql string) string {
+	query.groupByStr = sql
+	return query.append("ORDER BY " + sql)
+}
+
+func (query *Query) Group(fields ...interface{}) *Query {
+	if len(fields) == 0 || fields[0] == nil {
+		return query
+	}
+	for _,field := range fields{
+		if field == ""{ continue}
+		query.groups = append(query.groups, gconv.String(field))
+		query.fields = append(query.fields, gconv.String(field))
+	}
+	return query
+}
+
+func (query *Query) ToSQL() (string, []interface{}) {
+	sql := ""
+	if len(query.fields) > 0 {
+		sql += "SELECT "
+		sql += strings.Join(query.fields,",")
+
+	} else if query.selectStr != "" {
+		sql += "SELECT " + query.selectStr
+	}else{
+		sql += "SELECT *"
+	}
+	sql += " FROM " + query.fromStr
+	if len(query.wheres) > 0 {
+		sql += " WHERE "
+		sql += strings.Join(query.fields," AND ")
+	}
+	if len(query.groups) > 0{
+		sql += " GROUP BY "
+		sql += strings.Join(query.fields,",")
+	} else if query.groupByStr != "" {
+		sql += " GROUP BY " + query.groupByStr
+	}
+
+	if query.orderStr != "" {
+		sql += " ORDER BY " + query.orderStr
+	}
+
+	return sql, query.Args
+	//return query.Sql, query.Args
+}
+func (query *Query) ToList() g.List {
+	return query.dao.Query(query.Sql, query.Args...)
+}
+func (query *Query) ToMap() g.Map {
+	return query.dao.QueryOne(query.Sql, query.Args...)
+}
+func (query *Query) ToStructs(objPointerSlice interface{}) error {
+	return query.dao.QueryStructs(objPointerSlice, query.Sql, query.Args)
+}
+func (query *Query) ToStruct(objPointer interface{}) error {
+	return query.dao.QueryStruct(objPointer, query.Sql, query.Args)
+}
+func (query *Query) QueryValue() *g.Var {
+	return query.dao.QueryValue(query.Sql, query.Args)
+}
