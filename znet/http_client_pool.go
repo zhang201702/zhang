@@ -24,7 +24,7 @@ var clientTran = &http.Transport{
 var maxLen int = 100
 var clientCount = 0
 var mutex = sync.Mutex{}
-var clients = make([]*http.Client, maxLen)
+var clients []*http.Client = nil
 var isWait = false
 var free = make(chan *http.Client)
 
@@ -70,4 +70,5 @@ func init() {
 	if max > 0 {
 		maxLen = gconv.Int(max)
 	}
+	clients = make([]*http.Client, maxLen+2)
 }
