@@ -3,10 +3,12 @@ package zconfig
 import (
 	"errors"
 	"flag"
+	"github.com/fsnotify/fsnotify"
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/os/gfile"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
+	"log"
 	"testing"
 )
 
@@ -16,6 +18,9 @@ var innerConfig map[string]interface{}
 var Conf *gjson.Json
 var CryptoKey = []byte("zhang67890123456")
 var CryptoVi = []byte("1234567890123456")
+var stopWatch = make(chan bool)
+var configPath = "config/config.json"
+var watching = false
 
 func init() {
 	testing.Init()
@@ -44,7 +49,11 @@ func initDefault(filePath string) {
 		}
 		Debug = Conf.GetBool("Debug")
 		zlog.IsDebug = Debug
-
+		configPath = filePath
+		if watching {
+			stopWatch <- true
+		}
+		go watchConfig()
 	} else {
 		zlog.LogError(errors.New("未找到配置信息"))
 		Conf = gjson.New(new(map[string]interface{}))
@@ -78,5 +87,47 @@ func SetDefaultPath(path string) {
 func AddConfig(newConfig map[string]interface{}) {
 	for k, v := range newConfig {
 		innerConfig[k] = v
+	}
+}
+
+func watchConfig() {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				log.Println("event:", event)
+				if event.Op&fsnotify.Write == fsnotify.Write {
+					log.Println("modified file:", event.Name)
+					SetDefaultPath(configPath)
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				log.Println("error:", err)
+			}
+		}
+	}()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = watcher.Add(configPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	watching = true
+	select {
+	case <-stopWatch:
+		return
 	}
 }
