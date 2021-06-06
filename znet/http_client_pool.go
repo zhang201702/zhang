@@ -24,6 +24,7 @@ var clientTran = &http.Transport{
 var maxLen int = 100
 var clientCount = 0
 var mutex = sync.Mutex{}
+var mutexFree = sync.Mutex{}
 var clients []*http.Client = nil
 var isWait = false
 var free = make(chan *http.Client)
@@ -58,8 +59,12 @@ func GetHttpClient() *http.Client {
 }
 
 func FreeHttpClient(client *http.Client) {
+	mutexFree.Lock()
 	clientCount--
-	clients[clientCount] = client
+	if len(clients) > clientCount && clientCount > 0 {
+		clients[clientCount] = client
+	}
+	mutexFree.Unlock()
 	if isWait {
 		free <- client
 	}
