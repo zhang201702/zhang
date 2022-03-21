@@ -16,6 +16,15 @@ func Default() *ServerGF {
 		Server: g.Server(),
 	}
 
+	crt := zconfig.Conf.GetString("https.crt")
+	key := zconfig.Conf.GetString("https.key")
+
+	if crt != "" && key != "" {
+		port4https := zconfig.Conf.GetInt("https.port", 443)
+		server.SetHTTPSPort(port4https)
+		server.EnableHTTPS(crt, key)
+	}
+
 	htmlPath := zconfig.Conf.GetString("html")
 	if htmlPath == "" {
 		htmlPath = "html"
@@ -41,7 +50,8 @@ func Default() *ServerGF {
 	return server
 }
 
-func (server *ServerGF) Run() {
-
-	server.Server.Run()
+func (server *ServerGF) NoCache() {
+	server.BindMiddlewareDefault(func(r *ghttp.Request) {
+		r.Response.Header().Set("Cache-Control", "no-cache")
+	})
 }
