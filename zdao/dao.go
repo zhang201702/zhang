@@ -37,9 +37,11 @@ func initDB() {
 			})
 		}
 	case string:
+		dbType, dbLink := getLink(dbInfo.(string))
 		gdb.AddDefaultConfigGroup(gdb.ConfigGroup{
 			gdb.ConfigNode{
-				LinkInfo: dbInfo.(string),
+				Type:     dbType,
+				LinkInfo: dbLink,
 			},
 		})
 	}
