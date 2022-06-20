@@ -11,3 +11,8 @@ const (
 func Now() {
 	time.Now().Format(DateTime)
 }
+
+func GetTime(strDateTime string) time.Time {
+	time, _ := time.ParseInLocation(DateTime, strDateTime, time.Local)
+	return time
+}
