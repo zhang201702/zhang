@@ -6,6 +6,7 @@ import (
 	"github.com/go-gomail/gomail"
 	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
+	"sync"
 )
 
 type EmailConf struct {
@@ -17,28 +18,22 @@ type EmailConf struct {
 }
 
 var emailConf = (*EmailConf)(nil)
+var once = sync.Once{}
 
-func init() {
-	//	emailConfig := zconfig.Conf.GetMap("email")
-	temp := EmailConf{}
-	if err := zconfig.Conf.GetStruct("email", &temp); err != nil {
-		zlog.Log(err, "email.init", "未找找配置")
-		return
-	}
-
-	//if name,err := gaes.Decrypt([]byte(emailConf.UserName), zconfig.CryptoKey, zconfig.CryptoVi); err == nil {
-	//	emailConf.UserName = string(name)
-	//}
-	//if pwd,err := gaes.Decrypt([]byte(emailConf.Password), zconfig.CryptoKey, zconfig.CryptoVi); err == nil {
-	//	emailConf.Password = string(pwd)
-	//}
-	emailConf = &temp
-
-}
 func SendEmail(toAddress, toName, subject, body string) error {
+
+	once.Do(func() {
+		temp := EmailConf{}
+		if err := zconfig.Conf.GetStruct("email", &temp); err != nil {
+			zlog.Log(err, "email.init", "未找找配置")
+			return
+		}
+		emailConf = &temp
+	})
 	if emailConf == nil {
 		return errors.New("未找到email的配置")
 	}
+
 	m := gomail.NewMessage()
 	m.SetAddressHeader("From", emailConf.UserName, emailConf.FromName)
 	m.SetAddressHeader("To", toAddress, toName)

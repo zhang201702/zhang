@@ -6,10 +6,11 @@ import (
 	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
 	"strings"
+	"sync"
 )
 
 var dbDefault gdb.DB = nil
-var isInitDB = false
+var once = sync.Once{}
 
 func initDB() {
 
@@ -45,7 +46,6 @@ func initDB() {
 			},
 		})
 	}
-	isInitDB = true
 }
 
 /**
@@ -53,9 +53,8 @@ func initDB() {
   默认
 */
 func DB(names ...string) gdb.DB {
-	if !isInitDB {
-		initDB()
-	}
+
+	once.Do(initDB)
 	if len(names) == 0 {
 		if dbDefault == nil {
 			dbDefault = g.DB()

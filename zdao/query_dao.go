@@ -141,7 +141,13 @@ func (query *Query) And(where string, args ...interface{}) *Query {
 }
 func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) {
 	if len(args) == 0 || args[0] == nil {
-		query.Append(" AND " + defaultWhere)
+		if query.haveWhere || strings.Contains(strings.ToLower(query.Sql), "where") {
+			query.Append(" AND " + defaultWhere)
+		} else {
+			query.Append(" WHERE " + defaultWhere)
+			query.haveWhere = true
+		}
+
 		return
 	}
 	query.And(where, args...)

@@ -7,9 +7,10 @@ import (
 	"github.com/zhang201702/zhang/utils"
 	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
+	"sync"
 )
 
-var isInitRedis = false
+var once = sync.Once{}
 
 func initRedis() {
 
@@ -29,14 +30,13 @@ func initRedis() {
 		err := gredis.SetConfigByStr(redisInfo.(string))
 		zlog.Log("注册redis", redisInfo.(string), err)
 	}
-	isInitRedis = true
 }
 
 func GetRedis(name ...string) (result *Redis) {
-
-	if !isInitRedis {
+	once.Do(func() {
 		initRedis()
-	}
+	})
+
 	defer func() {
 
 		if err := recover(); err != nil {
