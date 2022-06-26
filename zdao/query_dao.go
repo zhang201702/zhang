@@ -158,7 +158,7 @@ func (query *Query) In(column string, args interface{}) *Query {
 }
 
 func (query *Query) And(where string, args ...interface{}) *Query {
-	if len(args) == 0 || args[0] == nil {
+	if len(args) == 0 || args[0] == nil || args[0] == "" {
 		return query
 	}
 	if where != "" {
@@ -168,7 +168,7 @@ func (query *Query) And(where string, args ...interface{}) *Query {
 	return query
 }
 func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) {
-	if len(args) == 0 || args[0] == nil {
+	if len(args) == 0 || args[0] == nil || args[0] == "" {
 		if query.haveWhere || strings.Contains(strings.ToLower(query.Sql), "where") {
 			query.Append(" AND " + defaultWhere)
 		} else {
