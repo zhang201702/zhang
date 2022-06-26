@@ -136,13 +136,13 @@ func (query *Query) Eq(column string, args interface{}) *Query {
 	if args == nil || args == "" {
 		return query
 	}
-	return query.And(z.String(column, " = ?"), args)
+	return query.And(column+" = ?", args)
 }
 func (query *Query) Like(column string, args interface{}) *Query {
 	if args == nil || args == "" {
 		return query
 	}
-	return query.And(z.String(column, " like ?"), z.String(args, "%"))
+	return query.And(column+" like ?", z.String(args, "%"))
 }
 
 func (query *Query) In(column string, args interface{}) *Query {
@@ -154,7 +154,7 @@ func (query *Query) In(column string, args interface{}) *Query {
 	if s.Len() == 0 {
 		return query
 	}
-	return query.And(z.String(column, " in (?)"), args)
+	return query.And(column+" in (?)", args)
 }
 
 func (query *Query) And(where string, args ...interface{}) *Query {
