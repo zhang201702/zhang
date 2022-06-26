@@ -6,8 +6,10 @@ import (
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/zhang201702/zhang/utils"
+	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
+	"reflect"
 	"strings"
 )
 
@@ -129,6 +131,32 @@ func (query *Query) Where(where string, args ...interface{}) *Query {
 	query.haveWhere = true
 	return query
 }
+
+func (query *Query) Eq(column string, args interface{}) *Query {
+	if args == nil || args == "" {
+		return query
+	}
+	return query.And(z.String(column, " = ?"), args)
+}
+func (query *Query) Like(column string, args interface{}) *Query {
+	if args == nil || args == "" {
+		return query
+	}
+	return query.And(z.String(column, " like ?"), z.String(args, "%"))
+}
+
+func (query *Query) In(column string, args interface{}) *Query {
+
+	if args == nil || args == "" {
+		return query
+	}
+	s := reflect.ValueOf(args)
+	if s.Len() == 0 {
+		return query
+	}
+	return query.And(z.String(column, " in (?)"), args)
+}
+
 func (query *Query) And(where string, args ...interface{}) *Query {
 	if len(args) == 0 || args[0] == nil {
 		return query
