@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/zhang201702/zhang/utils"
+	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
 	"reflect"
@@ -181,7 +182,11 @@ func (query *Query) AndDefault(defaultWhere, where string, args ...interface{}) 
 }
 
 func (query *Query) GroupBy(sql string) string {
-	return query.Append("GROUP BY " + sql)
+	return query.Append(" GROUP BY " + sql)
+}
+
+func (query *Query) Limit(start, num int) string {
+	return query.Append(z.String(" LIMIT ", start, ",", num))
 }
 
 func (query *Query) OrderBy(sql string) string {
