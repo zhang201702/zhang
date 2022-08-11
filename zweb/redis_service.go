@@ -73,11 +73,11 @@ func (rs *RedisService) Publish(channel string, data interface{}) {
 	if err != nil {
 		zlog.Error(err, "rs.Redis.publish", channel, data)
 	}
-	zlog.Info("rs.Redis.publish", v)
+	zlog.Info("rs.Redis.publish", v, channel, data)
 }
 
 func (rs *RedisService) Subscribe(channel string, receiver func(channel string, msg interface{})) {
-	conn := rs.Redis.Conn()
+	conn := rs.Redis.GetConn()
 	_, err := conn.Do("SUBSCRIBE", channel)
 	if err != nil {
 		zlog.Error(err, "rs.Redis.Subscribe", channel)
