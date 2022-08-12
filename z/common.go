@@ -8,8 +8,8 @@ const (
 	Time     = "15:04:05"
 )
 
-func Now() {
-	time.Now().Format(DateTime)
+func Now() string {
+	return time.Now().Local().Format(DateTime)
 }
 
 func GetTime(strDateTime string) time.Time {
