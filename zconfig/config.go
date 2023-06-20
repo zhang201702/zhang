@@ -39,6 +39,7 @@ func init() {
 func initDefault(filePath string) {
 	IsInit = true
 	innerConfig = make(map[string]interface{})
+
 	Conf = gjson.New(innerConfig)
 	if filePath != "" {
 
@@ -47,7 +48,8 @@ func initDefault(filePath string) {
 		if err := zfile.OpenJson(filePath, &innerConfig); err != nil {
 			zlog.LogError(err, "zconfig.Default", "读取config.json 异常", err)
 		}
-		Debug = Conf.GetBool("Debug")
+		Conf = gjson.New(innerConfig)
+		Debug = Conf.GetBool("debug")
 		zlog.IsDebug = Debug
 		configPath = filePath
 		if watching {
