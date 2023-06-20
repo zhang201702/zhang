@@ -1,43 +1,22 @@
 package zlog
 
-import (
-	"github.com/gogf/gf/encoding/gjson"
-	"log"
-	"reflect"
-)
+import "github.com/gogf/gf/frame/g"
 
 var IsDebug = true
 var IsInfo = true
 
 func Log(args ...interface{}) {
-	logArgs := make([]interface{}, 0)
-	for _, v := range args {
-		if v == nil {
-			v = "nil"
-		}
-		vt := reflect.TypeOf(v)
-		vtK := vt.Kind()
-		//if vtK == reflect.Ptr {
-		//
-		//	vtK = reflect.TypeOf(*v).Kind()
-		//}
-		if vtK == reflect.Struct {
-			v, _ = gjson.New(v).ToJsonString()
-		}
-
-		logArgs = append(logArgs, v, "==>")
-	}
-	log.Println(logArgs)
+	g.Log().Info(args...)
 }
 func LogError(err error, args ...interface{}) {
 	args = append(args, err)
-	Log(args...)
+	g.Log().Error(args...)
 }
 
 func Debug(args ...interface{}) {
 	if IsDebug {
 		args = append([]interface{}{"debug"}, args...)
-		Log(args...)
+		g.Log().Debug(args...)
 	}
 }
 

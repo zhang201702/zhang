@@ -32,8 +32,8 @@ func initDB() {
 			dbType, dbLink := getLink(link.(string))
 			gdb.SetConfigGroup(name, gdb.ConfigGroup{
 				gdb.ConfigNode{
-					Type:     dbType,
-					LinkInfo: dbLink,
+					Type: dbType,
+					Link: dbLink,
 				},
 			})
 		}
@@ -41,8 +41,8 @@ func initDB() {
 		dbType, dbLink := getLink(dbInfo.(string))
 		gdb.AddDefaultConfigGroup(gdb.ConfigGroup{
 			gdb.ConfigNode{
-				Type:     dbType,
-				LinkInfo: dbLink,
+				Type: dbType,
+				Link: dbLink,
 			},
 		})
 	}

@@ -3,7 +3,8 @@ package znet
 import (
 	"crypto/tls"
 	"errors"
-	"github.com/go-gomail/gomail"
+	"gopkg.in/gomail.v2"
+
 	"github.com/zhang201702/zhang/zconfig"
 	"github.com/zhang201702/zhang/zlog"
 	"sync"

@@ -75,7 +75,7 @@ func String(params ...interface{}) string {
 
 func NewMap(data interface{}) (result Map) {
 	gj := gjson.New(data)
-	result = gj.ToMap()
+	result = gj.Map()
 	return result
 }
 
