@@ -12,6 +12,16 @@ import (
 var dbDefault gdb.DB = nil
 var once = sync.Once{}
 
+func getLink(link string) (linkType string, linkValue string) {
+	firstIndex := strings.Index(link, ":")
+	linkType = link[0:(firstIndex)]
+	linkValue = link[firstIndex+1:]
+	if linkType != "zdb" {
+		return linkType, linkValue
+	}
+	link = zconfig.DecodeConfig(linkValue)
+	return getLink(link)
+}
 func initDB() {
 
 	defaultDbInfoName := "db"
@@ -19,12 +29,7 @@ func initDB() {
 	if dbInfo == nil {
 		return
 	}
-	getLink := func(link string) (linkType string, linkValue string) {
-		firstIndex := strings.Index(link, ":")
-		linkType = link[0:(firstIndex)]
-		linkValue = link[firstIndex+1:]
-		return linkType, linkValue
-	}
+
 	switch dbInfo.(type) {
 	case map[string]interface{}:
 		myMap := dbInfo.(map[string]interface{})
@@ -48,9 +53,11 @@ func initDB() {
 	}
 }
 
-/**
+/*
+*
 获取 DB对象.
-  默认
+
+	默认
 */
 func DB(names ...string) gdb.DB {
 

@@ -6,6 +6,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/gogf/gf/encoding/gjson"
 	"github.com/gogf/gf/os/gfile"
+	"github.com/zhang201702/zhang/zcrypto"
 	"github.com/zhang201702/zhang/zfile"
 	"github.com/zhang201702/zhang/zlog"
 	"log"
@@ -21,6 +22,7 @@ var CryptoVi = []byte("1234567890123456")
 var stopWatch = make(chan bool)
 var configPath = "config/config.json"
 var watching = false
+var AppKey = "JCz2HK0r!tLmAAKcV3S^Rm#AMQB7iBBN"
 
 func init() {
 	testing.Init()
@@ -52,10 +54,10 @@ func initDefault(filePath string) {
 		Debug = Conf.GetBool("debug")
 		zlog.IsDebug = Debug
 		configPath = filePath
-		if watching {
-			stopWatch <- true
-		}
-		go watchConfig()
+		//if watching {
+		//	stopWatch <- true
+		//}
+		//go watchConfig()
 	} else {
 		zlog.LogError(errors.New("未找到配置信息"))
 		Conf = gjson.New(new(map[string]interface{}))
@@ -92,6 +94,9 @@ func AddConfig(newConfig map[string]interface{}) {
 	}
 }
 
+func DecodeConfig(data string) string {
+	return zcrypto.Decode(AppKey, "", data)
+}
 func watchConfig() {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
