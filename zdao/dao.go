@@ -65,6 +65,7 @@ func DB(names ...string) gdb.DB {
 	if len(names) == 0 {
 		if dbDefault == nil {
 			dbDefault = g.DB()
+			dbDefault.SetDebug(zconfig.Debug)
 		}
 		return dbDefault
 	}
@@ -75,6 +76,7 @@ func DB(names ...string) gdb.DB {
 		zlog.Error(err, "创建db异常,name", name)
 		return nil
 	}
+	db.SetDebug(zconfig.Debug)
 	return db
 
 }
