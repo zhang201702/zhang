@@ -13,14 +13,11 @@ var dbDefault gdb.DB = nil
 var once = sync.Once{}
 
 func getLink(link string) (linkType string, linkValue string) {
+	link = zconfig.DecodeConfig(link)
 	firstIndex := strings.Index(link, ":")
 	linkType = link[0:(firstIndex)]
 	linkValue = link[firstIndex+1:]
-	if linkType != "zdb" {
-		return linkType, linkValue
-	}
-	link = zconfig.DecodeConfig(linkValue)
-	return getLink(link)
+	return linkType, linkValue
 }
 func initDB() {
 
