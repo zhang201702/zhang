@@ -28,6 +28,6 @@ func Info(args ...interface{}) {
 }
 
 func Error(err error, args ...interface{}) {
-	args = append([]interface{}{"error", err}, args...)
-	Log(args...)
+	args = append(args, err)
+	g.Log().Error(args...)
 }
