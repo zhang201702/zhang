@@ -54,29 +54,30 @@ func (da *CommonDao[T]) Fetch(where map[string]interface{}) *T {
 	return data
 }
 
-func (da *CommonDao[T]) GetList(where map[string]interface{}) []*T {
+func (da *CommonDao[T]) GetList(where map[string]interface{}, orderBy ...string) []*T {
 	tableName := da.Name
 	table := da.DB.Model(tableName)
 	list := make([]*T, 0)
-	err := table.Where(where).Scan(&list)
+	err := table.Where(where).Order(orderBy...).Scan(&list)
 	if err != nil {
 		zlog.LogError(err, "GetList error", where)
 	}
 	return list
 }
 
-func (da *CommonDao[T]) GetPage(where map[string]interface{}, page, size int) PageResult[T] {
+func (da *CommonDao[T]) GetPage(where map[string]interface{}, page, size int, orderBy ...string) PageResult[T] {
 	tableName := da.Name
 	table := da.DB.Model(tableName)
 	list := make([]*T, 0)
 	result := PageResult[T]{List: list}
-	rowCount, err := table.Where(where).Count()
+	table = table.Where(where)
+	rowCount, err := table.Count()
 	if err != nil {
 		zlog.LogError(err, "GetPage.Count error", where)
 		return result
 	}
 	result.RowCount = rowCount
-	err = table.Where(where).Page(page, size).Scan(&list)
+	err = table.Order(orderBy...).Page(page, size).Scan(&list)
 	if err != nil {
 		zlog.LogError(err, "GetPage error", where, page, size)
 	}
