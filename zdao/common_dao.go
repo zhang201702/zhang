@@ -10,9 +10,15 @@ type CommonDao[T any] struct {
 	Name string
 }
 
+type PageResult[T any] struct {
+	List     []*T `json:"list"`
+	RowCount int  `json:"rowCount"`
+}
+
 func NewCommonDao[T any](db gdb.DB, name string) *CommonDao[T] {
 	return &CommonDao[T]{Name: name, DB: db}
 }
+
 func (da *CommonDao[T]) Insert(data *T) (result interface{}, err error) {
 	tableName := da.Name
 	table := da.DB.Model(tableName)
@@ -49,16 +55,30 @@ func (da *CommonDao[T]) Fetch(where map[string]interface{}) *T {
 }
 
 func (da *CommonDao[T]) GetList(where map[string]interface{}) []*T {
-	return da.GetPage(where, 1, 100000)
-}
-
-func (da *CommonDao[T]) GetPage(where map[string]interface{}, page, size int) []*T {
 	tableName := da.Name
 	table := da.DB.Model(tableName)
-	result := make([]*T, 0)
-	err := table.Where(where).Page(page, size).Scan(&result)
+	list := make([]*T, 0)
+	err := table.Where(where).Scan(&list)
 	if err != nil {
-		zlog.LogError(err, "GetList error", where, page, size)
+		zlog.LogError(err, "GetList error", where)
+	}
+	return list
+}
+
+func (da *CommonDao[T]) GetPage(where map[string]interface{}, page, size int) PageResult[T] {
+	tableName := da.Name
+	table := da.DB.Model(tableName)
+	list := make([]*T, 0)
+	result := PageResult[T]{List: list}
+	rowCount, err := table.Where(where).Count()
+	if err != nil {
+		zlog.LogError(err, "GetPage.Count error", where)
+		return result
+	}
+	result.RowCount = rowCount
+	err = table.Where(where).Page(page, size).Scan(&list)
+	if err != nil {
+		zlog.LogError(err, "GetPage error", where, page, size)
 	}
 	return result
 }
