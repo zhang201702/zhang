@@ -2,6 +2,7 @@ package zdao
 
 import (
 	"github.com/gogf/gf/database/gdb"
+	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zlog"
 )
 
@@ -37,6 +38,18 @@ func (da *CommonDao[T]) Update(data *T, where map[string]interface{}) (result in
 
 	//data.CreateTime = z.Now()
 	result, err = table.Data(data).Where(where).Update()
+	if err != nil {
+		zlog.LogError(err, tableName, "修改异常", data, result)
+	}
+	return result, err
+}
+
+func (da *CommonDao[T]) UpdateMap(data z.Map, where map[string]interface{}) (result interface{}, err error) {
+	tableName := da.Name
+	table := da.DB.Model(tableName)
+
+	//data.CreateTime = z.Now()
+	result, err = table.Update(data, where)
 	if err != nil {
 		zlog.LogError(err, tableName, "修改异常", data, result)
 	}
