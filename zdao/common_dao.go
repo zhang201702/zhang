@@ -2,7 +2,6 @@ package zdao
 
 import (
 	"github.com/gogf/gf/database/gdb"
-	"github.com/zhang201702/zhang/z"
 	"github.com/zhang201702/zhang/zlog"
 )
 
@@ -44,7 +43,7 @@ func (da *CommonDao[T]) Update(data *T, where map[string]interface{}) (result in
 	return result, err
 }
 
-func (da *CommonDao[T]) UpdateMap(data z.Map, where map[string]interface{}) (result interface{}, err error) {
+func (da *CommonDao[T]) UpdateMap(data map[string]interface{}, where map[string]interface{}) (result interface{}, err error) {
 	tableName := da.Name
 	table := da.DB.Model(tableName)
 
