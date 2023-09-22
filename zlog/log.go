@@ -6,28 +6,31 @@ var IsDebug = true
 var IsInfo = true
 
 func Log(args ...interface{}) {
-	g.Log().Info(args...)
+  g.Log().Info(args...)
 }
 func LogError(err error, args ...interface{}) {
-	args = append(args, err)
-	g.Log().Error(args...)
+  args = append(args, err)
+  g.Log().Error(args...)
 }
 
 func Debug(args ...interface{}) {
-	if IsDebug {
-		args = append([]interface{}{"debug"}, args...)
-		g.Log().Debug(args...)
-	}
+  if IsDebug {
+    args = append([]interface{}{"debug"}, args...)
+    g.Log().Debug(args...)
+  }
 }
 
 func Info(args ...interface{}) {
-	if IsInfo {
-		args = append([]interface{}{"info"}, args...)
-		Log(args...)
-	}
+  if IsInfo {
+    args = append([]interface{}{"info"}, args...)
+    Log(args...)
+  }
 }
 
 func Error(err error, args ...interface{}) {
-	args = append(args, err)
-	g.Log().Error(args...)
+  if err != nil {
+    args = append(args, err)
+  }
+
+  g.Log().Error(args...)
 }
