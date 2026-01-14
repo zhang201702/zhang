@@ -1,0 +1,11 @@
+{
+  "/admin/user": {
+    "path": "/api/admin/admin/user",
+    "view": [
+      "page"
+    ],
+    "edit": [
+      "save","update","delete"
+    ]
+  }
+}
